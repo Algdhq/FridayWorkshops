@@ -16,12 +16,14 @@ public class ItemInteractable : MonoBehaviour, Iinteractable
             if (_canInteractAgain == true)
             {
                 _event.Invoke();
+                Debug.Log("Has Interacted");
             }
 
             if (_canInteractAgain == false)
             {
                 _event.Invoke();
                 _hasRun = true;
+                Debug.Log("Has Interacted");
             }
         }
         else
