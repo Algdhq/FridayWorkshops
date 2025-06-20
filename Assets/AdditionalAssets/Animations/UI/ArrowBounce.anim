@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: BouncingArrow
+  m_Name: ArrowBounce
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -23,16 +23,16 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: -3.99
-        inSlope: 3.0347276
-        outSlope: 3.0347276
+        value: 0.44
+        inSlope: 6.3109913
+        outSlope: 6.3109913
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
-        outWeight: 0.26289836
+        outWeight: 0.16367914
       - serializedVersion: 3
         time: 0.25
-        value: -3.7
+        value: 1.01
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -41,12 +41,12 @@ AnimationClip:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.5
-        value: -3.99
-        inSlope: -2.1421895
-        outSlope: -2.1421895
+        value: 0.44
+        inSlope: -5.151093
+        outSlope: -5.151093
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.28779006
+        inWeight: 0.11338258
         outWeight: 0.33333334
       m_PreInfinity: 2
       m_PostInfinity: 2
@@ -101,16 +101,16 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: -3.99
-        inSlope: 3.0347276
-        outSlope: 3.0347276
+        value: 0.44
+        inSlope: 6.3109913
+        outSlope: 6.3109913
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
-        outWeight: 0.26289836
+        outWeight: 0.16367914
       - serializedVersion: 3
         time: 0.25
-        value: -3.7
+        value: 1.01
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -119,12 +119,12 @@ AnimationClip:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.5
-        value: -3.99
-        inSlope: -2.1421895
-        outSlope: -2.1421895
+        value: 0.44
+        inSlope: -5.151093
+        outSlope: -5.151093
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.28779006
+        inWeight: 0.11338258
         outWeight: 0.33333334
       m_PreInfinity: 2
       m_PostInfinity: 2

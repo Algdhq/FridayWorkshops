@@ -9,12 +9,6 @@ public class TriggerWalkInto : MonoBehaviour
     [SerializeField] private bool _canRunMultipleTimes;
     [SerializeField] private UnityEvent _event;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -24,7 +18,7 @@ public class TriggerWalkInto : MonoBehaviour
                 Debug.Log("I ran into the player");
                 _event.Invoke();
             }
-            
+
             if (_canRunMultipleTimes == false)
             {
                 if (_hasRun == false)

@@ -9,31 +9,25 @@ public class LootManager : MonoBehaviour
     [Header("Loot Prefabs")]
     [SerializeField] private GameObject[] _standardLoot;
     [SerializeField] private GameObject[] _epicLoot;
-    [SerializeField] private GameObject[] _LegendaryLoot;
+    [SerializeField] private GameObject[] _legendaryLoot;
 
     private void Awake()
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
+            Destroy(this.gameObject);
             return;
         }
         Instance = this;
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     public GameObject GetRandomStandardLoot()
     {
-        if (_standardLoot.Length == 0)
+        if (_standardLoot.Length ==  0)
         {
             return null;
         }
-        int index = Random.Range(0, _standardLoot.Length);
+        int index = Random.Range(0, _standardLoot.Length);//if 0-5, this new stand loot
         return _standardLoot[index];
     }
 
@@ -49,11 +43,11 @@ public class LootManager : MonoBehaviour
 
     public GameObject GetRandomLegendaryLoot()
     {
-        if (_LegendaryLoot.Length == 0)
+        if (_legendaryLoot.Length == 0)
         {
             return null;
         }
-        int index = Random.Range(0, _LegendaryLoot.Length);
-        return _LegendaryLoot[index];
+        int index = Random.Range(0, _legendaryLoot.Length);
+        return _legendaryLoot[index];
     }
 }

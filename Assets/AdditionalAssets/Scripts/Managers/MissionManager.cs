@@ -28,20 +28,20 @@ public class MissionManager : MonoBehaviour
             if (_missions[index].mission != null)
             {
                 _missions[index].mission.Invoke();
-                Debug.Log("current mission is: " + _missions[index].name + 
+                Debug.Log("current mission is: " + _missions[index].name +
                     " | current ID is: " + +_missions[index].missionID);
             }
-        }                
+        }
     }
 
     public void UpdateMissionString(string value)
     {
-        if(_missionText != null)
+        if (_missionText != null)
         {
             _missionText.text = "Mission: " + value;
             AudioManager.Instance.PlaySFXClip(4);
             Invoke("ClearText", 5.0f);
-        }        
+        }
     }
 
     private void OnValidate()
