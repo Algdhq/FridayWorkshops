@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using StarterAssets;
 using UnityEngine.InputSystem;
+using UnityEngine.Events;
 
 public class FireWeapon : MonoBehaviour
 {
@@ -11,10 +12,11 @@ public class FireWeapon : MonoBehaviour
     [SerializeField] private ParticleSystem _smoke;
     [SerializeField] private GameObject _light;
     [SerializeField] private ParticleSystem _muzzleFlash02;
+    [SerializeField] private UnityEvent _event;
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && Input.GetMouseButton(1))
         {
             FireGun();
         }
@@ -29,6 +31,7 @@ public class FireWeapon : MonoBehaviour
         StartCoroutine("FlashLight");
         PlayerManager.Instance.CamShake();
         AudioManager.Instance.PlaySFXClip(0);
+        _event.Invoke();
     }
 
     IEnumerator FlashLight()

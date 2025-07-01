@@ -10,20 +10,17 @@ public class ItemInteractable : MonoBehaviour, Iinteractable
     private bool _hasRun;
 
     public void RunEvent()
-    {        
+    {
         if (_hasRun == false)
         {
-            if (_canInteractAgain == true)
+            if (_canInteractAgain)
             {
-                _event.Invoke();
-                Debug.Log("Has Interacted");
+                _event.Invoke(); // Always allow interaction                
             }
-
-            if (_canInteractAgain == false)
+            else if (!_hasRun)
             {
-                _event.Invoke();
+                _event.Invoke(); // Allow once
                 _hasRun = true;
-                Debug.Log("Has Interacted");
             }
         }
         else
@@ -31,4 +28,11 @@ public class ItemInteractable : MonoBehaviour, Iinteractable
             return;
         }
     }
+
+    public void ChangeInteractableAgain()
+    {
+        _canInteractAgain = !_canInteractAgain;
+    }
+
+    public bool CanInteract() => _canInteractAgain;
 }

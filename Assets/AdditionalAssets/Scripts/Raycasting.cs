@@ -15,6 +15,7 @@ public class Raycasting : MonoBehaviour
     [SerializeField] private LayerMask hitLayers;
     [SerializeField] private StarterAssetsInputs _input;
     [SerializeField] private GameObject _normalCamera;
+    [SerializeField] private GameObject _aimCamera;
     private float aimingBlend = 0f;
     [SerializeField] private float aimingLerpTime = 0.25f;
     private bool _noRaycast;
@@ -24,7 +25,6 @@ public class Raycasting : MonoBehaviour
     private Animator _anim;
     private Transform playerRootTransform;
     private RotationConstraint _rotationConstraint;
-
 
     private void Awake()
     {
@@ -72,7 +72,32 @@ public class Raycasting : MonoBehaviour
             _rotationConstraint.enabled = _aiming;
             _rotationConstraint.weight = _aiming ? 1f : 0f;
 
-            float targetBlend = _aiming ? 1f : 0f;
+            float targetBlend = 0f;
+
+            if (_aiming)
+            {
+                WeaponType currentWeaponType = InventoryManager.Instance.ReturnWeaponType();
+
+                switch (currentWeaponType)
+                {
+                    case WeaponType.Melee:
+                        targetBlend = 0.25f;
+                        _aimCamera.GetComponent<CinemachineVirtualCamera>().m_Lens.FieldOfView = 50f;
+                        break;
+                    case WeaponType.Pistol:
+                        targetBlend = 0.5f;
+                        _aimCamera.GetComponent<CinemachineVirtualCamera>().m_Lens.FieldOfView = 30f;
+                        break;
+                    case WeaponType.Rifle:
+                        targetBlend = 1.0f;
+                        _aimCamera.GetComponent<CinemachineVirtualCamera>().m_Lens.FieldOfView = 30f;
+                        break;
+                    default:
+                        targetBlend = 0f;
+                        _aimCamera.GetComponent<CinemachineVirtualCamera>().m_Lens.FieldOfView = 50f;
+                        break;
+                }
+            }
             aimingBlend = Mathf.MoveTowards(aimingBlend, targetBlend, Time.deltaTime / aimingLerpTime);
             _anim.SetFloat("AimingBool", aimingBlend);
 
@@ -84,6 +109,12 @@ public class Raycasting : MonoBehaviour
                 if (lookDirection != Vector3.zero)
                 {
                     playerRootTransform.forward = lookDirection;
+                    WeaponType currentWeaponType = InventoryManager.Instance.ReturnWeaponType();
+                    if (Input.GetMouseButtonDown(0) && currentWeaponType == WeaponType.Melee)
+                    {
+                        _anim.SetTrigger("Melee");
+                        AudioManager.Instance.PlaySFXClip(11);
+                    }
                 }
             }
 

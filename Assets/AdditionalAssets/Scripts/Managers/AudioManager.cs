@@ -12,11 +12,13 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip[] _footstepClips;
     [Header("UI SFX Clips")]
     [SerializeField] private AudioClip[] _UISFXClips;
+    [SerializeField] private AudioClip[] _UISFXMovementClip;
 
     [Header("Audio Sources")]
     [SerializeField] private AudioSource _sfxAudioSource;
     [SerializeField] private AudioSource _footstepAudioSource;
     [SerializeField] private AudioSource _UISFXAudioSource;
+    [SerializeField] private AudioSource _UISFXMovementSource;
 
     private void Awake()
     {
@@ -27,7 +29,6 @@ public class AudioManager : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject); // Optional: persist across scenes
     }
 
     public void PlaySFXClip(int value)
@@ -46,5 +47,11 @@ public class AudioManager : MonoBehaviour
     {
         _UISFXAudioSource.clip = _UISFXClips[value];
         _UISFXAudioSource.Play();
+    }
+
+    public void PlayUISFXMovement(int value)
+    {
+        _UISFXMovementSource.clip = _UISFXMovementClip[value];
+        _UISFXMovementSource.Play();
     }
 }

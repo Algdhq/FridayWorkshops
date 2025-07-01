@@ -171,6 +171,7 @@ MonoBehaviour:
   _speed: 15
   _smokeTrail: {fileID: 3265973653759618323}
   _explosionForce: {fileID: 3208573330551795967}
+  damage: 50
 --- !u!65 &3477283311431897676
 BoxCollider:
   m_ObjectHideFlags: 0

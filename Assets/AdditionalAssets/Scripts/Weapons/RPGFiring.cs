@@ -1,37 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using StarterAssets;
-using UnityEngine.InputSystem;
 
 public class RPGFiring : MonoBehaviour
 {
     [SerializeField] private GameObject _rocket;
     [SerializeField] private GameObject _rocketPosition;
     [SerializeField] private GameObject _rocketProp;
-    [SerializeField] private Transform _playerArmature;
-    [SerializeField] private StarterAssetsInputs _input;
-    private bool _canFire;
 
+    private bool _hasReleasedClick = false;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Update()
     {
-        
+        // Wait for the player to release left click before allowing fire again
+        if (!Input.GetMouseButton(0))
+        {
+            _hasReleasedClick = true;
+        }
+
+        if (Input.GetMouseButtonDown(0) && Input.GetMouseButton(1) && _hasReleasedClick)
+        {
+            FireRocket();
+            _hasReleasedClick = false; // prevent instant refire
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void FireRocket()
     {
-        if (_input.shoot)
-        {
-            Debug.Log("Fire Missile");
-            Instantiate(_rocket, _rocketPosition.transform.position, _rocketPosition.transform.rotation);
-            PlayerManager.Instance.CamShake();
-            AudioManager.Instance.PlaySFXClip(1);
-            _rocketProp.SetActive(false);
-
-            _input.shoot = false; // manually reset it
-        }
+        Debug.Log("Fire Missile");
+        Instantiate(_rocket, _rocketPosition.transform.position, _rocketPosition.transform.rotation);
+        PlayerManager.Instance.CamShake();
+        AudioManager.Instance.PlaySFXClip(1);
+        _rocketProp.SetActive(false);
     }
 }

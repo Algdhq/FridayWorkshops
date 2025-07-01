@@ -11,14 +11,20 @@ public class HitPoints : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _text.text = _hitPoints.ToString();
+        if (_text != null)
+        {
+            _text.text = _hitPoints.ToString();
+        }
     }
 
     public void TakeDamage(int value)
     {
         _hitPoints -= value;
-        _text.text = _hitPoints.ToString();
-        if(_hitPoints <= 0)
+        if (_text != null)
+        {
+            _text.text = _hitPoints.ToString();
+        }
+        if (_hitPoints <= 0)
         {
             Debug.Log("I died");
         }

@@ -7,6 +7,7 @@ public class Rocket : MonoBehaviour
     [SerializeField] private float _speed = 2.0f;
     [SerializeField] private ParticleSystem _smokeTrail;
     [SerializeField] private GameObject _explosionForce;
+    [SerializeField] private int damage;
     private BoxCollider _boxCollider;
     private MeshRenderer _meshRenderer;
     private GameObject _explosion;
@@ -16,7 +17,7 @@ public class Rocket : MonoBehaviour
     {
         _boxCollider = GetComponent<BoxCollider>();
         _meshRenderer = GetComponent<MeshRenderer>();
-        _explosion = GameObject.Find("Explosion_09");
+        _explosion = GameObject.Find("Explosion_09_DoNotRemove");
     }
 
     // Update is called once per frame
@@ -28,6 +29,10 @@ public class Rocket : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         Debug.Log(collision.gameObject.name);
+        if (collision.collider.GetComponent<HitPoints>() != null)
+        {
+            collision.collider.GetComponent<HitPoints>().TakeDamage(damage);
+        }
         if (_explosion != null)
         {
             _explosion.transform.position = this.transform.position;

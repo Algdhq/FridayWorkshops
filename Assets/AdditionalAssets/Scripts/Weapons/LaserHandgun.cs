@@ -19,7 +19,7 @@ public class NewBehaviourScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Mouse0) && Input.GetMouseButton(1))
         {
             Vector3 origin = _firePoint.position;
             Vector3 direction = _firePoint.forward;
