@@ -19,6 +19,10 @@ public class ExplosionForce : MonoBehaviour
             if (rb != null)
             {
                 rb.AddExplosionForce(_explosionForce, exlosionPos, _radius, 3.0f);
+                if (rb.GetComponent<HitPoints>() != null)
+                {
+                    rb.GetComponent<HitPoints>().TakeDamage(5);
+                }
             }
         }
     }

@@ -1,12 +1,15 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+public enum DialogueState { dialogueOn, dialogueoff }
+
 public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance { get; private set; }
-
+    private DialogueState _dialogueState;
+    public DialogueState CurrentDialogueState => _dialogueState;
     [SerializeField] private GameObject _dialogueUI;
     [SerializeField] private TextMeshProUGUI _dialogueText;
     private string[] _currentLines;
@@ -27,6 +30,7 @@ public class DialogueManager : MonoBehaviour
     {
         _dialogueUI.SetActive(false);
         _dialogueText.text = "";
+        _dialogueState = DialogueState.dialogueoff;
     }
 
     private void Update()
@@ -47,6 +51,7 @@ public class DialogueManager : MonoBehaviour
 
     public void StartDialogue(string[] lines)
     {
+        _dialogueState = DialogueState.dialogueOn;
         Raycasting.Instance.enabled = false;
         GameManager.Instance.PauseGame();
         _dialogueUI.SetActive(true);
@@ -62,5 +67,9 @@ public class DialogueManager : MonoBehaviour
         _isActive = false;
         _dialogueUI.SetActive(false);
         Raycasting.Instance.enabled = true;
+        _dialogueState = DialogueState.dialogueoff;
     }
 }
+
+
+

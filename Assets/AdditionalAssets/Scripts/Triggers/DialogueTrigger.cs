@@ -16,7 +16,7 @@ public class DialogueTrigger : MonoBehaviour
     }
 
     public void StartDialogue()
-    {        
+    {
         _itemInteractable.CanInteract();
         DialogueManager.Instance.StartDialogue(dialogueLines);
         Invoke("RunUnityEvent", 0.1f);
@@ -27,3 +27,6 @@ public class DialogueTrigger : MonoBehaviour
         _event.Invoke();
     }
 }
+
+
+

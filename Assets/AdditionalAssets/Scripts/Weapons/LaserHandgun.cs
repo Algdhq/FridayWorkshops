@@ -9,6 +9,7 @@ public class NewBehaviourScript : MonoBehaviour
     [SerializeField] private Transform _target;
     [SerializeField] private ParticleSystem _particleBlast;
     [SerializeField] private int _damage = 10;
+    [SerializeField] private LayerMask _layerMask;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,10 +28,10 @@ public class NewBehaviourScript : MonoBehaviour
 
             Ray ray = new Ray(origin, direction);
             RaycastHit HitInfo;
-            PlayerManager.Instance.CamShake();
+            PlayerManager.Instance.CamShake(PlayerManager.ShakeStrength.Normal);
             AudioManager.Instance.PlaySFXClip(3);
             
-            if (Physics.Raycast(ray, out HitInfo, 20f))
+            if (Physics.Raycast(ray, out HitInfo, 20f, ~_layerMask))
             {
                 endpoint = HitInfo.point;
                 _target.position = endpoint;

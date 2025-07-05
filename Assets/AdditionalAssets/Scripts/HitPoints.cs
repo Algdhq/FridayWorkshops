@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using TMPro;
 
 public class HitPoints : MonoBehaviour
@@ -8,6 +9,11 @@ public class HitPoints : MonoBehaviour
 
     [SerializeField] private int _hitPoints = 100;
     [SerializeField] private TMP_Text _text;
+    [SerializeField] private UnityEvent _hitEvent;
+    [SerializeField] private UnityEvent _deathEvent;
+    private bool _isDead;
+
+  
     // Start is called before the first frame update
     void Start()
     {
@@ -19,14 +25,24 @@ public class HitPoints : MonoBehaviour
 
     public void TakeDamage(int value)
     {
+        if (_isDead) return;
+
         _hitPoints -= value;
+
         if (_text != null)
         {
             _text.text = _hitPoints.ToString();
         }
+
+        if (_hitPoints > 0)
+        {
+            _hitEvent.Invoke();
+        }
+
         if (_hitPoints <= 0)
         {
-            Debug.Log("I died");
+            _isDead = true;
+            _deathEvent.Invoke();
         }
     }
 }

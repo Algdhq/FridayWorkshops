@@ -27,7 +27,7 @@ public class RPGFiring : MonoBehaviour
     {
         Debug.Log("Fire Missile");
         Instantiate(_rocket, _rocketPosition.transform.position, _rocketPosition.transform.rotation);
-        PlayerManager.Instance.CamShake();
+        PlayerManager.Instance.CamShake(PlayerManager.ShakeStrength.Normal);
         AudioManager.Instance.PlaySFXClip(1);
         _rocketProp.SetActive(false);
     }

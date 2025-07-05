@@ -23,7 +23,6 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 0;
         FindObjectOfType<StarterAssetsInputs>().isPaused = true;
-
     }
 
     public void UnPauseGame()

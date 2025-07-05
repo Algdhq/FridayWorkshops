@@ -12,3 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88d7cebc69a719040851718b22377576, type: 3}
   m_Name: PlayerStats
   m_EditorClassIdentifier: 
+  currentHealth: 20
+  maxHealth: 100
+  currentMana: 0
+  maxMana: 100
+  currentHandgunAmmo: 5
+  maxHandgunAmmo: 100
+  currentShotgunAmmo: 5
+  maxShotgunAmmo: 50
+  currentRifleAmmo: 5
+  maxRifleAmmo: 50

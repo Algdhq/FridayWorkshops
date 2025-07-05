@@ -37,7 +37,7 @@ public class Rocket : MonoBehaviour
         {
             _explosion.transform.position = this.transform.position;
             _explosion.GetComponent<ParticleSystem>().Play();
-            PlayerManager.Instance.CamShake();
+            PlayerManager.Instance.CamShake(PlayerManager.ShakeStrength.Strong);
             AudioManager.Instance.PlaySFXClip(2);
         }
         _speed = 0;

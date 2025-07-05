@@ -35,7 +35,7 @@ public class UIManager : MonoBehaviour
             }           
         }
 
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.Tab) && DialogueManager.Instance.CurrentDialogueState == DialogueState.dialogueoff)
         {
             if (_UIMenu.activeSelf)
             {
@@ -45,9 +45,7 @@ public class UIManager : MonoBehaviour
             {
                 OpenInventoryMenu();
             }
-        }
-
-        
+        }        
     }
 
     public void OpenInventoryMenu()

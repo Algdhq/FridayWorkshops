@@ -24,16 +24,18 @@ public class DrawerScript : MonoBehaviour
     {
         if (_drawerStatus == false)
         {
-            Debug.Log(_drawerStatus + "This is open");
+            //Debug.Log(_drawerStatus + "This is open");
             _targetZ = _open;
+            AudioManager.Instance.PlaySFXClip(14);
             _event.Invoke();
             _drawerStatus = !_drawerStatus;
         }
 
         else
         {
-            Debug.Log(_drawerStatus + "This is closed");
+            //Debug.Log(_drawerStatus + "This is closed");
             _targetZ = _close;
+            AudioManager.Instance.PlaySFXClip(13);
             _drawerStatus = !_drawerStatus;
         }
 

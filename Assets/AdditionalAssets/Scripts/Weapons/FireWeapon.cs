@@ -13,12 +13,37 @@ public class FireWeapon : MonoBehaviour
     [SerializeField] private GameObject _light;
     [SerializeField] private ParticleSystem _muzzleFlash02;
     [SerializeField] private UnityEvent _event;
+    private Animator _playerAnim;
+    private bool _isReloading;
+
+    private void Start()
+    {
+        _playerAnim = GameObject.Find("PlayerArmature").GetComponent<Animator>();
+    }
 
     private void Update()
     {
+        if (_isReloading == true)
+        {
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0) && Input.GetMouseButton(1))
         {
-            FireGun();
+            if (PlayerManager.Instance.CheckAmmoAvailability(0))
+            {
+                FireGun();
+                PlayerManager.Instance.UseHandgunBullet();
+            }
+            else
+            {
+                AudioManager.Instance.PlaySFXClip(16);
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            StartCoroutine(ReloadRoutine());
         }
     }
 
@@ -29,7 +54,7 @@ public class FireWeapon : MonoBehaviour
         _muzzleFlash02.Play();
         _smoke.Play();
         StartCoroutine("FlashLight");
-        PlayerManager.Instance.CamShake();
+        PlayerManager.Instance.CamShake(PlayerManager.ShakeStrength.Weak);
         AudioManager.Instance.PlaySFXClip(0);
         _event.Invoke();
     }
@@ -39,5 +64,15 @@ public class FireWeapon : MonoBehaviour
         _light.SetActive(true);
         yield return new WaitForSeconds(0.1f);
         _light.SetActive(false);
+    }
+
+    IEnumerator ReloadRoutine()
+    {
+        _isReloading = true;
+        PlayerManager.Instance.ReloadHandgun();
+        _playerAnim.SetTrigger("Reload");
+        AudioManager.Instance.PlaySFXClip(17);
+        yield return new WaitForSeconds(1.4f);
+        _isReloading = false;
     }
 }
