@@ -30,14 +30,14 @@ public class FireWeapon : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0) && Input.GetMouseButton(1))
         {
-            if (PlayerManager.Instance.CheckAmmoAvailability(0))
+            if (PlayerManager.Instance.CheckAmmoAvailability(2))//Verify slot number in inventory manager
             {
                 FireGun();
-                PlayerManager.Instance.UseHandgunBullet();
+                PlayerManager.Instance.UseMagnumBullet();
             }
             else
             {
-                AudioManager.Instance.PlaySFXClip(16);
+                AudioManager.Instance.PlayWeaponClip(4);
             }
         }
 
@@ -55,7 +55,7 @@ public class FireWeapon : MonoBehaviour
         _smoke.Play();
         StartCoroutine("FlashLight");
         PlayerManager.Instance.CamShake(PlayerManager.ShakeStrength.Weak);
-        AudioManager.Instance.PlaySFXClip(0);
+        AudioManager.Instance.PlayWeaponClip(0);
         _event.Invoke();
     }
 
@@ -69,9 +69,9 @@ public class FireWeapon : MonoBehaviour
     IEnumerator ReloadRoutine()
     {
         _isReloading = true;
-        PlayerManager.Instance.ReloadHandgun();
+        PlayerManager.Instance.ReloadMagnum();
         _playerAnim.SetTrigger("Reload");
-        AudioManager.Instance.PlaySFXClip(17);
+        AudioManager.Instance.PlayWeaponClip(5);
         yield return new WaitForSeconds(1.4f);
         _isReloading = false;
     }

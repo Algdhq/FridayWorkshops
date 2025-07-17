@@ -16,9 +16,51 @@ MonoBehaviour:
   maxHealth: 100
   currentMana: 0
   maxMana: 100
-  currentHandgunAmmo: 5
+  currentHandgunAmmo: 66
+  handgunClip: 0
+  maxHandgunClip: 6
   maxHandgunAmmo: 100
-  currentShotgunAmmo: 5
+  currentMagnumAmmo: 14
+  MagnumClip: 4
+  maxMagnumClip: 6
+  maxMagnumAmmo: 100
+  currentLaserAmmo: 0
+  LaserClip: 0
+  maxLaserClip: 6
+  maxLaserAmmo: 100
+  currentShotgunAmmo: 13
+  shotgunClip: 0
+  maxShotgunClip: 0
   maxShotgunAmmo: 50
-  currentRifleAmmo: 5
+  currentSubMachineGunAmmo: 0
+  SubMachineGunClip: 0
+  maxSubMachineGunClip: 30
+  maxSubMachineGunAmmo: 100
+  currentMachineGunAmmo: 0
+  MachineGunClip: 0
+  maxMachineGunClip: 30
+  maxMachineGunAmmo: 100
+  currentRifleAmmo: 11
+  rifleClip: 0
+  maxRifleClip: 0
   maxRifleAmmo: 50
+  currentRPGAmmo: 0
+  RPGClip: 0
+  maxRPGClip: 1
+  maxRPGAmmo: 6
+  currentGrenadeAmmo: 0
+  GrenadeClip: 0
+  maxGrenadeClip: 1
+  maxGrenadeAmmo: 6
+  currentMolotovAmmo: 0
+  MolotovClip: 0
+  maxMolotovClip: 1
+  maxMolotovAmmo: 6
+  currentMineAmmo: 0
+  MineClip: 0
+  maxMineClip: 1
+  maxMineAmmo: 6
+  currentTNTAmmo: 0
+  TNTClip: 0
+  maxTNTClip: 1
+  maxTNTAmmo: 6

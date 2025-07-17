@@ -25,6 +25,9 @@ public class Raycasting : MonoBehaviour
     private Animator _anim;
     private Transform playerRootTransform;
     private RotationConstraint _rotationConstraint;
+    private MeleeAttack _meleeAttack;
+    [SerializeField] private float _meleeCooldown = 0.5f; // time between swings
+    private bool _canMelee = true;
 
     private void Awake()
     {
@@ -42,7 +45,7 @@ public class Raycasting : MonoBehaviour
         _input = GameObject.Find("PlayerArmature").GetComponent<StarterAssetsInputs>();
         _anim = GameObject.Find("PlayerArmature").GetComponent<Animator>();
         playerRootTransform = GameObject.Find("PlayerArmature").transform;
-        _rotationConstraint = GameObject.Find("CC_Base_Spine02").GetComponent<RotationConstraint>();
+        _rotationConstraint = GameObject.Find("CC_Base_Spine02").GetComponent<RotationConstraint>();        
     }
 
     // Update is called once per frame
@@ -69,8 +72,19 @@ public class Raycasting : MonoBehaviour
             _anim.SetBool("Aiming", _aiming);
             _normalCamera.SetActive(!_aiming);
 
-            _rotationConstraint.enabled = _aiming;
-            _rotationConstraint.weight = _aiming ? 1f : 0f;
+            WeaponType weapon = InventoryManager.Instance._weaponType;
+
+            if (_aiming && weapon != WeaponType.Melee)
+            {
+                _rotationConstraint.enabled = true;
+                _rotationConstraint.weight = 1f;
+            }
+            else
+            {
+                _rotationConstraint.enabled = false;
+                _rotationConstraint.weight = 0f;
+            }
+
 
             float targetBlend = 0f;
 
@@ -84,11 +98,25 @@ public class Raycasting : MonoBehaviour
                         targetBlend = 0.25f;
                         _aimCamera.GetComponent<CinemachineVirtualCamera>().m_Lens.FieldOfView = 50f;
                         break;
-                    case WeaponType.Pistol:
+                    case WeaponType.Handgun:
+                    case WeaponType.Magnum:
+                    case WeaponType.Laser:
                         targetBlend = 0.5f;
                         _aimCamera.GetComponent<CinemachineVirtualCamera>().m_Lens.FieldOfView = 30f;
                         break;
+                    case WeaponType.Grenade:
+                    case WeaponType.Molotov:
+                    case WeaponType.Mine:
+                    case WeaponType.TNT:
+                        // Optional: don't aim, or use a unique value later
+                        targetBlend = 0.75f;
+                        _aimCamera.GetComponent<CinemachineVirtualCamera>().m_Lens.FieldOfView = 50f;
+                        break;
+                    case WeaponType.Shotgun:
+                    case WeaponType.SubMachineGun:
+                    case WeaponType.MachineGun:
                     case WeaponType.Rifle:
+                    case WeaponType.RPG:
                         targetBlend = 1.0f;
                         _aimCamera.GetComponent<CinemachineVirtualCamera>().m_Lens.FieldOfView = 30f;
                         break;
@@ -110,10 +138,21 @@ public class Raycasting : MonoBehaviour
                 {
                     playerRootTransform.forward = lookDirection;
                     WeaponType currentWeaponType = InventoryManager.Instance.ReturnWeaponType();
-                    if (Input.GetMouseButtonDown(0) && currentWeaponType == WeaponType.Melee)
+                    if (Input.GetMouseButtonDown(0) && currentWeaponType == WeaponType.Melee && _canMelee)
                     {
                         _anim.SetTrigger("Melee");
-                        AudioManager.Instance.PlaySFXClip(11);
+                        GameObject meleeWeapon = InventoryManager.Instance.GetCurrentWeapon();
+
+                        if (meleeWeapon != null)
+                        {
+                            _meleeAttack = meleeWeapon.GetComponent<MeleeAttack>();
+                            if (_meleeAttack != null)
+                            {
+                                _meleeAttack.Swing();
+                                _canMelee = false;
+                                StartCoroutine(MeleeCooldownRoutine());
+                            }
+                        }
                     }
                 }
             }
@@ -123,6 +162,12 @@ public class Raycasting : MonoBehaviour
                 Interact();
             }
         }        
+    }
+
+    private IEnumerator MeleeCooldownRoutine()
+    {
+        yield return new WaitForSeconds(_meleeCooldown);
+        _canMelee = true;
     }
 
     public void NoRaycast(bool value)

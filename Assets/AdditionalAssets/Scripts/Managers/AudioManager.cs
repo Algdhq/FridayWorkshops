@@ -7,6 +7,7 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance { get; private set; }
     [Header("Audio Clips")]
     [SerializeField] private AudioClip[] _sfxClips;
+    [SerializeField] private AudioClip[] _weaponClips;
     [SerializeField] private AudioClip[] _stingerClips;
     [SerializeField] private AudioClip[] _longStingerClips;
     [SerializeField] private AudioClip[] _footstepClips;
@@ -16,6 +17,7 @@ public class AudioManager : MonoBehaviour
 
     [Header("Audio Sources")]
     [SerializeField] private AudioSource _sfxAudioSource;
+    [SerializeField] private AudioSource _weaponSource;
     [SerializeField] private AudioSource _stingerSource;
     [SerializeField] private AudioSource _longStingerSource;
     [SerializeField] private AudioSource _footstepAudioSource;
@@ -42,6 +44,17 @@ public class AudioManager : MonoBehaviour
         }
         _sfxAudioSource.clip = _sfxClips[value];
         _sfxAudioSource.Play();
+    }
+
+    public void PlayWeaponClip(int value)
+    {
+        if (value < 0 || value >= _weaponClips.Length)
+        {
+            _weaponSource.Pause();
+            return;
+        }
+        _weaponSource.clip = _weaponClips[value];
+        _weaponSource.Play();
     }
 
     public void PlayStingerClip(int value)

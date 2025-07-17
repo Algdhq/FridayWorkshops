@@ -11,11 +11,13 @@ public class RaycastingWeapon : MonoBehaviour
 
     private GameObject _bloodParticlePosition;
     private ParticleSystem _bloodParticles;
+    private MeleeAttack _meleeAttack;
 
     private void Start()
     {
         _bloodParticlePosition = GameObject.Find("BloodBurstPosition_DoNotRemove");
         _bloodParticles = _bloodParticlePosition.GetComponentInChildren<ParticleSystem>();
+        _meleeAttack = GetComponent<MeleeAttack>();
     }
 
     public void RaycastWeapon()
@@ -25,6 +27,11 @@ public class RaycastingWeapon : MonoBehaviour
         {
             //Debug.Log(hit.collider.name);
             HitPoints hp = hit.collider.GetComponent<HitPoints>();
+            if (_meleeAttack != null)
+            {
+                _meleeAttack.PlayStrikeSound();
+            }
+
             if (hp != null)
             {
                 hp.TakeDamage(_damage);

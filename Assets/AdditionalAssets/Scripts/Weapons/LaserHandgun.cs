@@ -28,8 +28,8 @@ public class NewBehaviourScript : MonoBehaviour
 
             Ray ray = new Ray(origin, direction);
             RaycastHit HitInfo;
-            PlayerManager.Instance.CamShake(PlayerManager.ShakeStrength.Normal);
-            AudioManager.Instance.PlaySFXClip(3);
+            PlayerManager.Instance.CamShake(PlayerManager.ShakeStrength.Weak);
+            AudioManager.Instance.PlayWeaponClip(2);
             
             if (Physics.Raycast(ray, out HitInfo, 20f, ~_layerMask))
             {
