@@ -2,6 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public class LevelThreshold 
+{ 
+    public int level; 
+    public int requiredEXP; 
+}
+
 [CreateAssetMenu(fileName = "PlayerStats", menuName = "Player/Stats")]
 public class PlayerStatsSO : ScriptableObject
 {
@@ -9,9 +16,27 @@ public class PlayerStatsSO : ScriptableObject
     public int currentHealth = 20;
     public int maxHealth = 100;
 
-    [Header("Mana")]
-    public int currentMana = 0;
-    public int maxMana = 100;
+    [Header("Name")]
+    public string playerName;
+
+    [Header("EXP")]
+    public int currentEXP = 0;
+    public int currentLevel = 1;
+    public List<LevelThreshold> _levelThreshold = new List<LevelThreshold>();
+
+    [Header("Coins")]
+    public int totalCoins;
+
+    [Header("Status")]
+    public string characterStatus;
+
+    [Header("Mission")]
+    public string currentMission;
+
+    [Header("HealthKits")]
+    public int currentHealthKits = 0;
+    public int maxHealthKits = 5;
+    public int healthPointsRestored = 75;
 
     [Header("Handgun Ammo")]
     public int currentHandgunAmmo = 0;

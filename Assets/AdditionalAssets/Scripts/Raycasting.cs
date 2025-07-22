@@ -5,6 +5,7 @@ using UnityEngine.Animations;
 using StarterAssets;
 using Cinemachine;
 using UnityEngine;
+using EPOOutline;
 
 public class Raycasting : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class Raycasting : MonoBehaviour
     private bool _noRaycast;
     private bool _canInteract;
     private bool _aiming;
+    private GameObject _lastOutlinedObject;
     private RaycastHit hit;
     private Animator _anim;
     private Transform playerRootTransform;
@@ -56,12 +58,32 @@ public class Raycasting : MonoBehaviour
         if (Physics.Raycast(ray, out hit, rayDistance, hitLayers))
         {
             _canInteract = true;
+
+            // Enable outline on hit object
+            if (hit.collider.TryGetComponent(out Outlinable outline))
+            {
+                outline.enabled = true;
+            }
+
+            // Disable all other outlines in the scene (except the one hit)
+            foreach (Outlinable o in FindObjectsOfType<Outlinable>())
+            {
+                if (o.gameObject != hit.collider.gameObject)
+                    o.enabled = false;
+            }
         }
         else
         {
             _canInteract = false;
+
+            // Disable all outlines if nothing is hit
+            foreach (Outlinable o in FindObjectsOfType<Outlinable>())
+            {
+                o.enabled = false;
+            }
         }
     }
+
 
     void Update()
     {

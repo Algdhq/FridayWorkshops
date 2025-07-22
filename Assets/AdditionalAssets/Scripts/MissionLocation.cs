@@ -9,6 +9,7 @@ public class MissionLocation : MonoBehaviour
     private float _distance;
     [SerializeField] private TextMeshProUGUI _distanceText;
     [SerializeField] private Transform _newPosition;
+    private float _distanceOffset = 4f; 
 
     // Start is called before the first frame update
     void Start()
@@ -28,9 +29,9 @@ public class MissionLocation : MonoBehaviour
         lookTarget.y = transform.position.y;
         transform.LookAt(lookTarget);
 
-        _distance = Vector3.Distance(transform.position, _camera.position);
-        float reduced = Mathf.Floor(_distance * 10f) / 10f;
-        _distanceText.text = reduced.ToString("0.0" + "m");
+        _distance = Vector3.Distance(transform.position, _camera.position) - _distanceOffset;
+        _distance = Mathf.Max(0f, _distance);
+        _distanceText.text = _distance.ToString("0.0" + "m");
     }
 
     public void SetNewMissionPosition(Transform value)

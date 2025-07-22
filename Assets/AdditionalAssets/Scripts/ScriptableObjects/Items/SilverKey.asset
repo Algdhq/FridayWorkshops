@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f7b0b53f1b95354c8c53d58f0ce6c1b, type: 3}
   m_Name: SilverKey
   m_EditorClassIdentifier: 
-  itemName: SilverKey
+  itemName: Silver Key
   itemDescription: This is the silver key for another door.
-  icon: {fileID: 0}
+  icon: {fileID: 1890457120, guid: da94b6bfd20914f4ab167d9f0a2fbc40, type: 3}

@@ -12,18 +12,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88d7cebc69a719040851718b22377576, type: 3}
   m_Name: PlayerStats
   m_EditorClassIdentifier: 
-  currentHealth: 20
+  currentHealth: 75
   maxHealth: 100
-  currentMana: 0
-  maxMana: 100
-  currentHandgunAmmo: 66
-  handgunClip: 0
-  maxHandgunClip: 6
+  playerName: Player
+  currentEXP: 0
+  currentLevel: 1
+  _levelThreshold:
+  - level: 1
+    requiredEXP: 200
+  - level: 2
+    requiredEXP: 500
+  - level: 3
+    requiredEXP: 1000
+  totalCoins: 0
+  characterStatus: 'Player Status: I think I''m doing OK.  I need to be careful though.'
+  currentMission: 
+  currentHealthKits: 1
+  maxHealthKits: 5
+  healthPointsRestored: 75
+  currentHandgunAmmo: 54
+  handgunClip: 4
+  maxHandgunClip: 13
   maxHandgunAmmo: 100
-  currentMagnumAmmo: 14
-  MagnumClip: 4
+  currentMagnumAmmo: 2
+  MagnumClip: 6
   maxMagnumClip: 6
-  maxMagnumAmmo: 100
+  maxMagnumAmmo: 30
   currentLaserAmmo: 0
   LaserClip: 0
   maxLaserClip: 6

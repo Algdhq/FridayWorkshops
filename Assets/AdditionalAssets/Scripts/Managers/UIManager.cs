@@ -14,7 +14,17 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject _UIMenu;
     [SerializeField] private Button _firstSelectedButton;
     [SerializeField] private TextMeshProUGUI[] _ammoCounts;
+    [SerializeField] private TextMeshProUGUI _mission;
+    [SerializeField] private KeyItemUISlot[] _keyItemSlots;
+    [SerializeField] private TextMeshProUGUI _healthKitsCollected;
+    [SerializeField] private TextMeshProUGUI _playerName;
+    [SerializeField] private TextMeshProUGUI _currentHealth;
+    [SerializeField] private TextMeshProUGUI _expTotal;
+    [SerializeField] private TextMeshProUGUI _totalCoins;
+    [SerializeField] private TextMeshProUGUI _playerLevel;
+    [SerializeField] private TextMeshProUGUI _playerStatus;
     private GameObject _lastSelected;
+
 
     private void Awake()
     {
@@ -26,6 +36,11 @@ public class UIManager : MonoBehaviour
             }
             Instance = this;
         }
+    }
+
+    private void Start()
+    {
+        _UIMenu.SetActive(false);
     }
 
     private void Update()
@@ -60,6 +75,8 @@ public class UIManager : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(_firstSelectedButton.gameObject);
         AudioManager.Instance.PlayUISFXClip(2);
         UpdateAmmoCounts();
+        UpdateStats();
+        UpdateKeyItemDisplay();
     }
 
     public void CloseInventoryMenu()
@@ -67,6 +84,58 @@ public class UIManager : MonoBehaviour
         _UIMenu.SetActive(false);
         GameManager.Instance.UnPauseGame();
         AudioManager.Instance.PlayUISFXClip(3);
+    }
+
+    public void UpdateStats()
+    {
+        PlayerStatsSO stats = PlayerManager.Instance.GetStats();
+        _healthKitsCollected.text = stats.currentHealthKits.ToString() + "/" + stats.maxHealthKits.ToString();
+        _playerName.text = "Name : " + stats.playerName.ToString();
+        _currentHealth.text = "Health: " + stats.currentHealth.ToString() + "/" + stats.maxHealth.ToString();
+        _expTotal.text = "EXP: " + stats.currentEXP.ToString();
+        _totalCoins.text = "Coins: " + stats.totalCoins.ToString();
+        _playerLevel.text = "Level: " + stats.currentLevel.ToString();
+        UpdatePlayerStatus();
+        _mission.text = stats.currentMission.ToString();
+    }
+
+    public void UpdatePlayerStatus()
+    {
+        PlayerStatsSO stats = PlayerManager.Instance.GetStats();
+        if (stats.currentHealth > 70)
+        {
+            stats.characterStatus = "Player Status: I think I'm doing OK.  I need to be careful though.";
+        }
+        else if (stats.currentHealth < 69 && stats.currentHealth > 30)
+        {
+            stats.characterStatus = "Player Status: I'm really pretty bad.  I need to patch up.  I need to use a med kit.";
+        }
+        else if (stats.currentHealth < 29 && stats.currentHealth > 10)
+        {
+            stats.characterStatus = "Player Status: I think I'm gonna die...  I need a med kit - FAST!";
+        }
+        else if (stats.currentHealth < 9)
+        {
+            stats.characterStatus = "Player Status: This is it!  I'm going to die if I don't get a health kit right now!";
+        }
+        _playerStatus.text = stats.characterStatus.ToString();
+    }
+
+    public void UpdateKeyItemDisplay()
+    {
+        var keyItems = InventoryManager.Instance.keyItems;
+
+        for (int i = 0; i < _keyItemSlots.Length; i++)
+        {
+            if (i < keyItems.Count)
+            {
+                _keyItemSlots[i].SetKeyItem(keyItems[i]);
+            }
+            else
+            {
+                _keyItemSlots[i].ClearSlot();
+            }
+        }
     }
 
     public void UpdateAmmoCounts()

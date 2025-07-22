@@ -10,6 +10,9 @@ public class PlayerManager : MonoBehaviour
     public enum AmmoType { melee, handgun, magnum, laser, shotgun, submachinegun, machinegun, rifle, RPG, grenade, molotov, mine, tnt};
     private AmmoType _ammoType;
 
+    [Header("Gameplay Values")]
+    [SerializeField] private int _healthPackValue;
+
     [Header("Connected Components")]
     [SerializeField] private PlayerStatsSO _playerStats;
     [SerializeField] private TextMeshProUGUI _healthText;
@@ -56,6 +59,31 @@ public class PlayerManager : MonoBehaviour
         if (_playerStats.currentHealth <= 0)
         {
             Debug.Log("I died - now play death function");
+        }
+    }
+
+    public void AddHealthPack()
+    {
+        int currentHealthPackCount = _playerStats.currentHealthKits;
+        if (currentHealthPackCount < _playerStats.maxHealthKits)
+        {
+            _playerStats.currentHealthKits++;
+        }
+    }
+
+    public void UseHealthPack()
+    {
+        int currentHealthPackCount = _playerStats.currentHealthKits;
+        if (currentHealthPackCount > 0)
+        {
+            UpdateHealthValue(_healthPackValue);
+            _playerStats.currentHealthKits--;
+            AudioManager.Instance.PlayUISFXClip(4);
+            UIManager.Instance.UpdateStats();
+        }
+        else
+        {
+            AudioManager.Instance.PlayUISFXClip(5);
         }
     }
 

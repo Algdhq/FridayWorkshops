@@ -17,6 +17,7 @@ public class MissionManager : MonoBehaviour
 
     [SerializeField] private List<MissionEvent> _missions = new List<MissionEvent>();
     [SerializeField] private TextMeshProUGUI _missionText;
+    [SerializeField] private PlayerStatsSO _playerStats;
     private int _missionNumber;
 
 
@@ -39,6 +40,7 @@ public class MissionManager : MonoBehaviour
         if (_missionText != null)
         {
             _missionText.text = "Mission: " + value;
+            _playerStats.currentMission = _missionText.text;
             AudioManager.Instance.PlaySFXClip(4);
             Invoke("ClearText", 5.0f);
         }
