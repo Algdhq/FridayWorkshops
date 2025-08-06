@@ -81,9 +81,15 @@ public class UIManager : MonoBehaviour
 
     public void CloseInventoryMenu()
     {
+        bool wasOpen = _UIMenu.activeInHierarchy;
+
         _UIMenu.SetActive(false);
         GameManager.Instance.UnPauseGame();
-        AudioManager.Instance.PlayUISFXClip(3);
+
+        if (wasOpen) // Only play SFX if the menu was actually open
+        {
+            AudioManager.Instance.PlayUISFXClip(3);
+        }
     }
 
     public void UpdateStats()

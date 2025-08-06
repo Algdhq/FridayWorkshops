@@ -30,8 +30,8 @@ MonoBehaviour:
   currentHealthKits: 1
   maxHealthKits: 5
   healthPointsRestored: 75
-  currentHandgunAmmo: 54
-  handgunClip: 4
+  currentHandgunAmmo: 45
+  handgunClip: 13
   maxHandgunClip: 13
   maxHandgunAmmo: 100
   currentMagnumAmmo: 2
@@ -44,7 +44,7 @@ MonoBehaviour:
   maxLaserAmmo: 100
   currentShotgunAmmo: 13
   shotgunClip: 0
-  maxShotgunClip: 0
+  maxShotgunClip: 8
   maxShotgunAmmo: 50
   currentSubMachineGunAmmo: 0
   SubMachineGunClip: 0

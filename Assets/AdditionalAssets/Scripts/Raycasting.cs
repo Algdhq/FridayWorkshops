@@ -197,6 +197,11 @@ public class Raycasting : MonoBehaviour
         _noRaycast = value;
     }
 
+    public bool IsAiming()
+    {
+        return _aiming;
+    }
+
     private void Interact()
     {
         if (hit.collider.GetComponent<Iinteractable>() != null)

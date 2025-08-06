@@ -12,6 +12,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip[] _longStingerClips;
     [SerializeField] private AudioClip[] _footstepClips;
     [SerializeField] private AudioClip[] _enemyClips;
+    [SerializeField] private AudioClip[] _zombieJumpscareClips;
+    [SerializeField] private AudioClip[] _zombieDeathClips;
     [SerializeField] private AudioClip[] _UISFXClips;
     [SerializeField] private AudioClip[] _UISFXMovementClip;
 
@@ -22,6 +24,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioSource _longStingerSource;
     [SerializeField] private AudioSource _footstepAudioSource;
     [SerializeField] private AudioSource _enemyAudioSource;
+    [SerializeField] private AudioSource _zombieJumpscareAudioSource;
+    [SerializeField] private AudioSource _zombieDeathAudioSource;
     [SerializeField] private AudioSource _UISFXAudioSource;
     [SerializeField] private AudioSource _UISFXMovementSource;
 
@@ -99,6 +103,28 @@ public class AudioManager : MonoBehaviour
         }
         _enemyAudioSource.clip = _enemyClips[value];
         _enemyAudioSource.Play();
+    }
+
+    public void PlayZombieJumpscareClip(int value)
+    {
+        if (value < 0 || value >= _zombieJumpscareClips.Length)
+        {
+            _zombieJumpscareAudioSource.Pause();
+            return;
+        }
+        _zombieJumpscareAudioSource.clip = _zombieJumpscareClips[value];
+        _zombieJumpscareAudioSource.Play();
+    }
+
+    public void PlayZombieDeathClip(int value)
+    {
+        if (value < 0 || value >= _zombieDeathClips.Length)
+        {
+            _zombieDeathAudioSource.Pause();
+            return;
+        }
+        _zombieDeathAudioSource.clip = _zombieDeathClips[value];
+        _zombieDeathAudioSource.Play();
     }
 
     public void PlayUISFXClip(int value)

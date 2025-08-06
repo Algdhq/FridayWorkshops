@@ -4,18 +4,20 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.AI;
 
-public enum Status
-{
-    Undisturbed,
-    Alerted,
-    Chase,
-    Attack,
-    Death,
-    Stunned
-}
+
 
 public class Zombie : MonoBehaviour
 {
+    public enum Status
+    {
+        Undisturbed,
+        Alerted,
+        Chase,
+        Attack,
+        Death,
+        Stunned
+    }
+
     [SerializeField] private Status _status;
 
     private Animator _anim;
@@ -146,7 +148,7 @@ public class Zombie : MonoBehaviour
     {
         _anim.SetTrigger("Alert");
         PlayerManager.Instance.CamShake(PlayerManager.ShakeStrength.Normal);
-        AudioManager.Instance.PlayStingerClip(0);
+        AudioManager.Instance.PlayZombieJumpscareClip(Random.Range(0, 6));
         AudioManager.Instance.PlayLongStingerClip(0);
         _lookAtConstraint.constraintActive = true;
         if (_wasShot == 1)
@@ -167,7 +169,7 @@ public class Zombie : MonoBehaviour
         _lookAtConstraint.constraintActive = false;
         _sphereCollider.enabled = false;
         AudioManager.Instance.PlayLongStingerClip(1);
-        AudioManager.Instance.PlayEnemyClip(0);
+        AudioManager.Instance.PlayZombieJumpscareClip(Random.Range(0, 6));
         StopCoroutine("ForceEngagement");
         StopCoroutine("EngagementCountdown");
     }
@@ -189,7 +191,7 @@ public class Zombie : MonoBehaviour
     {
         _navMeshAgent.speed = 0;
         _anim.SetBool("FallDown", true);
-        AudioManager.Instance.PlayEnemyClip(-1);
+        AudioManager.Instance.PlayZombieDeathClip(Random.Range(0, 4));
         StopAllCoroutines();
         Invoke("GetUpFromStunned", Random.Range(2.0f, 3.0f));
     }
@@ -225,8 +227,8 @@ public class Zombie : MonoBehaviour
         CancelInvoke("GetUpFromStunned");
         StopAllCoroutines();
         _sphereCollider.enabled = false;
+        AudioManager.Instance.PlayZombieDeathClip(Random.Range(0, 4));
         AudioManager.Instance.PlayStingerClip(1);
-        AudioManager.Instance.PlayEnemyClip(-1);
         AudioManager.Instance.PlayLongStingerClip(-1);
         _isDead = true;
         _bloodDecal.SetActive(true);

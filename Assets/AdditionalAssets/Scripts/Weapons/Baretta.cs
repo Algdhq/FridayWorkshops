@@ -8,19 +8,20 @@ public class Baretta : MonoBehaviour
     private Animator _anim;
     [SerializeField] private ParticleSystem _muzzleFlash01;
     [SerializeField] private ParticleSystem _muzzleFlash02;
+    [SerializeField] private ParticleSystem _smoke;
     [SerializeField] private UnityEvent _event;
     private bool _isReloading;
     private Animator _playerAnim;
 
-
     // Start is called before the first frame update
     void Start()
     {
-        _anim = GetComponentInChildren<Animator>();
+        _anim = GetComponent<Animator>();
         _playerAnim = GameObject.Find("PlayerArmature").GetComponent<Animator>();
     }
 
-    private void Update()
+    // Update is called once per frame
+    void Update()
     {
         if (_isReloading == true)
         {
@@ -45,16 +46,15 @@ public class Baretta : MonoBehaviour
             StartCoroutine(ReloadRoutine());
         }
     }
-
-    // Update is called once per frame
     private void FireGun()
     {
         _anim.SetTrigger("Fire");
         _muzzleFlash01.Play();
         _muzzleFlash02.Play();
+        _smoke.Play();
+        _event.Invoke();
         AudioManager.Instance.PlayWeaponClip(12);
         PlayerManager.Instance.CamShake(PlayerManager.ShakeStrength.Weak);
-        _event.Invoke();
     }
 
     IEnumerator ReloadRoutine()
@@ -66,4 +66,7 @@ public class Baretta : MonoBehaviour
         yield return new WaitForSeconds(1.4f);
         _isReloading = false;
     }
+
 }
+
+

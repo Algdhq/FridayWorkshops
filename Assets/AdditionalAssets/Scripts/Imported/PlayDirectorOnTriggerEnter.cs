@@ -8,41 +8,30 @@ using UnityEngine.InputSystem;
 public class PlayDirectorOnTriggerEnter : MonoBehaviour
 {
     [SerializeField] private PlayableDirector _director;
-    [SerializeField] private bool _repositionDirectorForEnemyAttack;
+    [Header("Features of Cutscene")]
+    [SerializeField] private bool _inGameCutscene;
     [SerializeField] private bool _keepGunOnDuringCutscene;
-    [SerializeField] private bool _SkippableCutscene;
-    [SerializeField] private GameObject _directorPosition;
-    [Header("True if you want to turn off raycasting")]
+    [SerializeField] private bool _skippableCutscene;
     [SerializeField] private bool _turnOffRaycast;
-    [Header("If true, the cutscene is a ingame cutscene")]
-    [SerializeField] private bool _InGameCutscene;
+    [Header("Objects to adjust during cutscene")]
+    [SerializeField] private GameObject _inGameReticule;
+    [SerializeField] private int _gunModel;
+
     [Header("This is the immediate event")]
     [SerializeField] private UnityEvent _event;
+    [Header("Seconds to play Delayed Event")]
+    [SerializeField] private float _time;
     [Header("This is a delayed event")]
     [SerializeField] private UnityEvent _delayedEvent;
     [Header("Event played at end of Timeline Playback")]
-    [SerializeField] private UnityEvent _endTimelineEvent;
-    [Header("Time delayed")]
-    [SerializeField] private float _time;
+    [SerializeField] private UnityEvent _endTimelineEvent;    
 
-    //private CharController _charController;
-    private GameObject _inGameReticule;
-    private GameObject _gunModel;
-
-
-
-    private void Start()
-    {
-        //_charController = GameObject.Find("PlayerArmature").GetComponent<CharController>();
-        _inGameReticule = GameObject.Find("Image_Reticule");
-        _gunModel = GameObject.Find("USP_Pos");
-    }
 
     void Update()
     {
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
-            if (_InGameCutscene == true)
+            if (_inGameCutscene == true)
             {
                 return;
             }
@@ -55,54 +44,45 @@ public class PlayDirectorOnTriggerEnter : MonoBehaviour
 
     void SkipToEnd()
     {
-        if (_SkippableCutscene == true)
+        if (_director == null) return;
+        if (_skippableCutscene == true)
         {
-            // Get the total duration of the timeline
             double duration = _director.duration;
-
-            // Calculate the time one second before the end
-            double skipTime = duration - 1.0;
-
-            // Ensure skipTime doesn't go below 0
+            double skipTime = duration - 0.2f;
             skipTime = Mathf.Max(0, (float)skipTime);
-
-            // Set the Director's time to one second before the end
             _director.time = skipTime;
-
-            // Play from the end
             _director.Play();
             _inGameReticule.SetActive(true);
-            //_charController.InCutscene(false);
         }        
     }
 
     private void OnEnable()
     {
+        if (_director == null) return;
         _director.stopped += OnPlayableDirectorStopped;
     }
     private void OnTriggerEnter(Collider other)
     {
+        if (_director == null) return;
         if (other.CompareTag("Player"))
         {
-            if (_repositionDirectorForEnemyAttack == true)
+            if (!_director.gameObject.activeInHierarchy)
             {
-                _director.transform.position = _directorPosition.transform.position;
-                _director.transform.rotation = _directorPosition.transform.rotation;
+                _director.gameObject.SetActive(true);
             }
+
             if (_inGameReticule != null)
-            {
-                if (_InGameCutscene == false)
+            {           
+                if (_inGameCutscene == false)
                 {
                     _inGameReticule.SetActive(false);
+                    Raycasting.Instance.NoRaycast(true);
                 }
             }
+
             _director.Play();
             _event.Invoke();
             HideGunDuringCutscene();
-            if (_turnOffRaycast == true)
-            {
-                //_charController.InCutscene(true);
-            }
             this.gameObject.GetComponent<BoxCollider>().enabled = false;
             Invoke("DelayedEvent", _time);
         }
@@ -111,9 +91,7 @@ public class PlayDirectorOnTriggerEnter : MonoBehaviour
     private void DelayedEvent()
     {
         _delayedEvent.Invoke();
-    }
-
-    
+    }    
 
     void OnPlayableDirectorStopped(PlayableDirector aDirector)
     {
@@ -123,9 +101,10 @@ public class PlayDirectorOnTriggerEnter : MonoBehaviour
             {
                 _inGameReticule.SetActive(true);
             }
+            Raycasting.Instance.NoRaycast(false);
             RevealGunAfterCutscene();
             _endTimelineEvent.Invoke();
-            //_charController.InCutscene(false);
+            _director.gameObject.SetActive(false);
             this.gameObject.SetActive(false);
         }
     }
@@ -139,10 +118,8 @@ public class PlayDirectorOnTriggerEnter : MonoBehaviour
     {
         if (_keepGunOnDuringCutscene == false)
         {
-            if (_gunModel != null)
-            {
-                _gunModel.SetActive(false);
-            }            
+            _gunModel = InventoryManager.Instance.GetWeaponTypeIndex();
+            InventoryManager.Instance.SetCurrentWeapon(13);
         }
         else
         {
@@ -152,9 +129,6 @@ public class PlayDirectorOnTriggerEnter : MonoBehaviour
 
     private void RevealGunAfterCutscene()
     {
-        if (_gunModel != null)
-        {
-            _gunModel.SetActive(true);
-        }            
+        InventoryManager.Instance.SetCurrentWeapon(_gunModel);
     }
 }

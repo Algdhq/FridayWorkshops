@@ -7,7 +7,7 @@ public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager Instance { get; private set; }
 
-    public enum AmmoType { melee, handgun, magnum, laser, shotgun, submachinegun, machinegun, rifle, RPG, grenade, molotov, mine, tnt};
+    public enum AmmoType { melee, handgun, magnum, laser, shotgun, submachinegun, machinegun, rifle, RPG, grenade, molotov, mine, tnt, emptyhand};
     private AmmoType _ammoType;
 
     [Header("Gameplay Values")]
@@ -141,6 +141,10 @@ public class PlayerManager : MonoBehaviour
         {
             return _playerStats.TNTClip > 0;
         }
+        else if (value == 13) // empty
+        {
+            return _playerStats.EmptyHandClip > 0;
+        }
         else
         {
             return false;
@@ -217,6 +221,12 @@ public class PlayerManager : MonoBehaviour
     public void UseTNT()
     {
         _playerStats.TNTClip = Mathf.Clamp(_playerStats.TNTClip - 1, 0, _playerStats.maxTNTAmmo);
+        UpdateAmmoUI();
+    }
+
+    public void UseEmptyHand()
+    {
+        _playerStats.EmptyHandClip = Mathf.Clamp(_playerStats.EmptyHandClip - 1, 0, _playerStats.maxEmptyHandAmmo);
         UpdateAmmoUI();
     }
 
@@ -340,6 +350,11 @@ public class PlayerManager : MonoBehaviour
         UpdateAmmoUI();
     }
 
+    public void ReloadEmptyHand()
+    {        
+        UpdateAmmoUI();
+    }
+
 
     public void UpdateHandgunAmmo(int value)
     {
@@ -412,6 +427,11 @@ public class PlayerManager : MonoBehaviour
         _playerStats.currentTNTAmmo = Mathf.Clamp(_playerStats.currentTNTAmmo, 0, _playerStats.maxTNTAmmo);
     }
 
+    public void UpdateEmptyHandAmmo(int value)
+    {
+        return;
+    }
+
     public void UpdateAmmoUI()
     {
         switch (_ammoType)
@@ -479,6 +499,11 @@ public class PlayerManager : MonoBehaviour
             case AmmoType.tnt:
                 _ammoInClip.text = _playerStats.TNTClip.ToString();
                 _totalAmmo.text = "/ " + _playerStats.currentTNTAmmo.ToString();
+                break;
+
+            case AmmoType.emptyhand:
+                _ammoInClip.text = "∞";
+                _totalAmmo.text = "/∞";
                 break;
         }
     }

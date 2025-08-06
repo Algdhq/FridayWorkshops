@@ -16,7 +16,8 @@ public enum WeaponType
     Grenade,
     Molotov,
     Mine,
-    TNT
+    TNT,
+    EmptyHand
 }
 
 public class InventoryManager : MonoBehaviour
@@ -116,6 +117,9 @@ public class InventoryManager : MonoBehaviour
             case WeaponType.TNT:
                 PlayerManager.Instance.SetAmmoType(PlayerManager.AmmoType.tnt);
                 break;
+            case WeaponType.EmptyHand:
+                PlayerManager.Instance.SetAmmoType(PlayerManager.AmmoType.tnt);
+                break;
         }
 
         PlayerManager.Instance.UpdateAmmoUI();
@@ -164,6 +168,9 @@ public class InventoryManager : MonoBehaviour
             case 12:
                 _weaponType = WeaponType.TNT;
                 break;
+            case 13:
+                _weaponType = WeaponType.EmptyHand;
+                break;
             default:
                 _weaponType = WeaponType.Melee;
                 break;
@@ -174,6 +181,11 @@ public class InventoryManager : MonoBehaviour
     public WeaponType ReturnWeaponType()
     {
         return _weaponType;
+    }
+
+    public int GetWeaponTypeIndex()
+    {
+        return (int)_weaponType;
     }
 
     public GameObject GetCurrentWeapon()

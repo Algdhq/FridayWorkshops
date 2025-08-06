@@ -10,7 +10,6 @@ public class MP5KAttack : MonoBehaviour
     [SerializeField] private ParticleSystem _muzzleFlash02;
     [SerializeField] private ParticleSystem _smoke;
     [SerializeField] private ParticleSystem _shellEjection;
-    [SerializeField] private GameObject _light;
     [SerializeField] private UnityEvent _event;
     private Animator _playerAnim;
     private bool _isReloading;
@@ -109,3 +108,5 @@ public class MP5KAttack : MonoBehaviour
         _isReloading = false;
     }
 }
+
+

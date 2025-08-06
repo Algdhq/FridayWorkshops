@@ -109,4 +109,10 @@ public class PlayerStatsSO : ScriptableObject
     public int TNTClip = 0;
     public int maxTNTClip = 1;
     public int maxTNTAmmo = 6;
+
+    [Header("EmptyHand Ammo")]
+    public int currentEmptyHandAmmo = 0;
+    public int EmptyHandClip = 0;
+    public int maxEmptyHandClip = 6;
+    public int maxEmptyHandAmmo = 100;
 }
