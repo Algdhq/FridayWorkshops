@@ -33,6 +33,7 @@ public class Zombie02_SimpleStalker : MonoBehaviour
     [SerializeField] private SphereCollider _sphereCollider;
     [SerializeField] private GameObject _bloodDecal;
     [SerializeField] private float _stalkingSpeed;
+    [SerializeField] private int _exp;
 
     // Start is called before the first frame update
     void Start()
@@ -229,6 +230,7 @@ public class Zombie02_SimpleStalker : MonoBehaviour
         _navMeshAgent.isStopped = true;
         AudioManager.Instance.PlayZombieDeathClip(Random.Range(0, 4));
         _anim.SetTrigger("Death");
+        PlayerManager.Instance.AddEXP(_exp);
     }
 
     public void TurnOffColliders()

@@ -131,4 +131,9 @@ public class PlayDirectorOnTriggerEnter : MonoBehaviour
     {
         InventoryManager.Instance.SetCurrentWeapon(_gunModel);
     }
+
+    public bool CurrentlyInCutscene()
+    {
+        return _director != null && _director.state == PlayState.Playing;
+    }
 }

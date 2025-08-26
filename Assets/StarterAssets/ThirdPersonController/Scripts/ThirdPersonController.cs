@@ -86,6 +86,7 @@ namespace StarterAssets
         private float _rotationVelocity;
         private float _verticalVelocity;
         private float _terminalVelocity = 53.0f;
+        private bool _isDead;
 
         // timeout deltatime
         private float _jumpTimeoutDelta;
@@ -154,6 +155,8 @@ namespace StarterAssets
 
         private void Update()
         {
+            if (_isDead) return;
+
             _hasAnimator = TryGetComponent(out _animator);
 
             JumpAndGravity();
@@ -387,6 +390,16 @@ namespace StarterAssets
             {
                 AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
             }
+        }
+
+        public void Die()
+        {
+            _isDead = true;
+        }
+
+        public void Revive()
+        {
+            _isDead = false;
         }
     }
 }

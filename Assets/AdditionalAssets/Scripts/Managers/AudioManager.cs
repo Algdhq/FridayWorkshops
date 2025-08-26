@@ -6,10 +6,13 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance { get; private set; }
     [Header("Audio Clips")]
+    [SerializeField] private AudioClip[] _playerClips;
+    [SerializeField] private AudioClip[] _playerVoiceClips;
     [SerializeField] private AudioClip[] _sfxClips;
     [SerializeField] private AudioClip[] _weaponClips;
     [SerializeField] private AudioClip[] _stingerClips;
     [SerializeField] private AudioClip[] _longStingerClips;
+    [SerializeField] private AudioClip[] _shortJumpscareClips;
     [SerializeField] private AudioClip[] _footstepClips;
     [SerializeField] private AudioClip[] _enemyClips;
     [SerializeField] private AudioClip[] _zombieJumpscareClips;
@@ -18,10 +21,13 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip[] _UISFXMovementClip;
 
     [Header("Audio Sources")]
+    [SerializeField] private AudioSource _playerAudioSource;
+    [SerializeField] private AudioSource _playerVoiceAudioSource;
     [SerializeField] private AudioSource _sfxAudioSource;
     [SerializeField] private AudioSource _weaponSource;
     [SerializeField] private AudioSource _stingerSource;
     [SerializeField] private AudioSource _longStingerSource;
+    [SerializeField] private AudioSource _shortJumpscareSource;
     [SerializeField] private AudioSource _footstepAudioSource;
     [SerializeField] private AudioSource _enemyAudioSource;
     [SerializeField] private AudioSource _zombieJumpscareAudioSource;
@@ -37,6 +43,28 @@ public class AudioManager : MonoBehaviour
             return;
         }
         Instance = this;
+    }
+
+    public void PlayPlayerClip(int value)
+    {
+        if (value < 0 || value >= _playerClips.Length)
+        {
+            _playerAudioSource.Pause();
+            return;
+        }
+        _playerAudioSource.clip = _playerClips[value];
+        _playerAudioSource.Play();
+    }
+
+    public void PlayPlayerVoiceClip(int value)
+    {
+        if (value < 0 || value >= _playerVoiceClips.Length)
+        {
+            _playerVoiceAudioSource.Pause();
+            return;
+        }
+        _playerVoiceAudioSource.clip = _playerVoiceClips[value];
+        _playerVoiceAudioSource.Play();
     }
 
     public void PlaySFXClip(int value)
@@ -81,6 +109,17 @@ public class AudioManager : MonoBehaviour
         }
         _longStingerSource.clip = _longStingerClips[value];
         _longStingerSource.Play();
+    }
+
+    public void PlayShortJumpscareClip(int value)
+    {
+        if (value < 0 || value >= _shortJumpscareClips.Length)
+        {
+            _shortJumpscareSource.Pause();
+            return;
+        }
+        _shortJumpscareSource.clip = _shortJumpscareClips[value];
+        _shortJumpscareSource.Play();
     }
 
     public void PlayFootstepClip(int value)

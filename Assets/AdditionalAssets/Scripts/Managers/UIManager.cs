@@ -8,11 +8,30 @@ using TMPro;
 public class UIManager : MonoBehaviour
 {
     public enum AmmoType {Melee, Handgun, Magnum, Laser, Shotgun, SubMachineGun, MachineGun, Rifle, RPG, Grenade, Molotov, Mine, TNT}
+    public enum MenuType {Main, Tutorial, Costume, VideoAudio, Restart, Social }
+    [System.Serializable]
+    public class MenuPanel
+    {
+        public MenuType menuType;
+        public GameObject panel;
+        public Selectable firstSelected; // Optional
+    }
 
     public static UIManager Instance { get; private set; }
-
+    [Header("Menu Elements")]
     [SerializeField] private GameObject _UIMenu;
     [SerializeField] private Button _firstSelectedButton;
+
+    [SerializeField] private GameObject _GameOver;
+    [SerializeField] private Button _firstSelectedButtonGameOver;
+
+    [SerializeField] private GameObject _menuRoot;
+    [SerializeField] private List<MenuPanel> _menus;
+    [SerializeField] private TMP_Text _versionText;
+    private MenuType _currentMenu;
+
+
+    [Header("Inventory Menu Elements")]
     [SerializeField] private TextMeshProUGUI[] _ammoCounts;
     [SerializeField] private TextMeshProUGUI _mission;
     [SerializeField] private KeyItemUISlot[] _keyItemSlots;
@@ -24,6 +43,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _playerLevel;
     [SerializeField] private TextMeshProUGUI _playerStatus;
     private GameObject _lastSelected;
+    private bool _isPauseMenuOpen;
+    private bool _isGameOverMenuOpen;
 
 
     private void Awake()
@@ -41,6 +62,12 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         _UIMenu.SetActive(false);
+        _menuRoot.SetActive(false);
+        _currentMenu = MenuType.Main;
+        if (_versionText != null)
+        {
+            _versionText.text = $"Build Version: {Application.version}";
+        }
     }
 
     private void Update()
@@ -54,8 +81,13 @@ public class UIManager : MonoBehaviour
             }           
         }
 
-        if (Input.GetKeyDown(KeyCode.Tab) && DialogueManager.Instance.CurrentDialogueState == DialogueState.dialogueoff)
+        if (Input.GetKeyDown(KeyCode.Tab) && DialogueManager.Instance.CurrentDialogueState == DialogueState.dialogueoff && _isGameOverMenuOpen == false)
         {
+            if (IsAnyCutscenePlaying() || (_menuRoot != null && _menuRoot.activeSelf))
+            {
+                return;
+            }
+
             if (_UIMenu.activeSelf)
             {
                 CloseInventoryMenu();
@@ -64,7 +96,23 @@ public class UIManager : MonoBehaviour
             {
                 OpenInventoryMenu();
             }
-        }        
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape) && DialogueManager.Instance.CurrentDialogueState == DialogueState.dialogueoff && _isGameOverMenuOpen == false)
+        {
+            if (IsAnyCutscenePlaying() || IsInventoryOpen) return;
+
+            if (_menuRoot != null && _menuRoot.activeSelf)
+            {
+                HideAllMenus();
+                GameManager.Instance.UnPauseGame();
+            }
+            else
+            {
+                ShowMenu(MenuType.Main);
+                GameManager.Instance.PauseGame();
+            }
+        }
     }
 
     public void OpenInventoryMenu()
@@ -92,13 +140,76 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public bool IsInventoryOpen => _UIMenu.activeSelf;
+
+    public void ShowMenu(MenuType menuToShow)
+    {
+        if (_menuRoot != null && !_menuRoot.activeSelf)
+            _menuRoot.SetActive(true);
+
+        foreach (var menu in _menus)
+        {
+            bool isTarget = menu.menuType == menuToShow;
+            menu.panel.SetActive(isTarget);
+
+            if (isTarget && menu.firstSelected != null)
+            {
+                EventSystem.current.SetSelectedGameObject(null);
+                EventSystem.current.SetSelectedGameObject(menu.firstSelected.gameObject);
+            }
+        }
+
+        _currentMenu = menuToShow;
+        AudioManager.Instance.PlayUISFXClip(6);
+
+    }
+
+    public void HideAllMenus()
+    {
+        foreach (var menu in _menus)
+            menu.panel.SetActive(false);
+
+        if (_menuRoot != null)
+            _menuRoot.SetActive(false);
+
+        AudioManager.Instance.PlayUISFXClip(7);
+    }
+
+    public void OnMenuButtonClicked(string menuName)
+    {
+        if (System.Enum.TryParse(menuName, out MenuType parsed))
+        {
+            ShowMenu(parsed);
+        }
+    }
+
+    public void ChooseCostume(int costumeValue)
+    {
+        Debug.Log("Costume Picked is " + costumeValue);
+    }
+
+    public bool IsAnyCutscenePlaying()
+    {
+        PlayDirectorOnTriggerEnter[] allDirectors = GameObject.FindObjectsOfType<PlayDirectorOnTriggerEnter>();
+
+        foreach (var dir in allDirectors)
+        {
+            if (dir != null && dir.CurrentlyInCutscene())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void UpdateStats()
     {
         PlayerStatsSO stats = PlayerManager.Instance.GetStats();
         _healthKitsCollected.text = stats.currentHealthKits.ToString() + "/" + stats.maxHealthKits.ToString();
         _playerName.text = "Name : " + stats.playerName.ToString();
         _currentHealth.text = "Health: " + stats.currentHealth.ToString() + "/" + stats.maxHealth.ToString();
-        _expTotal.text = "EXP: " + stats.currentEXP.ToString();
+        _expTotal.text = "EXP: " + stats.currentEXP.ToString() + " / " + stats._levelThreshold[stats.currentLevel-1].requiredEXP;
         _totalCoins.text = "Coins: " + stats.totalCoins.ToString();
         _playerLevel.text = "Level: " + stats.currentLevel.ToString();
         UpdatePlayerStatus();
@@ -161,5 +272,19 @@ public class UIManager : MonoBehaviour
         _ammoCounts[10].text = stats.currentMolotovAmmo.ToString();
         _ammoCounts[11].text = stats.currentMineAmmo.ToString();
         _ammoCounts[12].text = stats.currentTNTAmmo.ToString();
+    }
+
+    public void OpenGameOverScreen()
+    {
+        _isGameOverMenuOpen = true;
+        AudioManager.Instance.PlayUISFXClip(8);
+        _GameOver.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(_firstSelectedButtonGameOver.gameObject);              
+    }
+
+    public void UpdateGameOverScreen(bool value)
+    {
+        _isGameOverMenuOpen = value;
     }
 }

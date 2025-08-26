@@ -18,16 +18,26 @@ public class GameManager : MonoBehaviour
 
     }
     // Start is called before the first frame update
-    
+
     public void PauseGame()
     {
         Time.timeScale = 0;
-        FindObjectOfType<StarterAssetsInputs>().isPaused = true;
+
+        var input = FindObjectOfType<StarterAssetsInputs>();
+        if (input != null)
+            input.isPaused = true;
+
+        isPaused = true;
     }
 
     public void UnPauseGame()
     {
         Time.timeScale = 1;
-        FindObjectOfType<StarterAssetsInputs>().isPaused = false;
+
+        var input = FindObjectOfType<StarterAssetsInputs>();
+        if (input != null)
+            input.isPaused = false;
+
+        isPaused = false;
     }
 }

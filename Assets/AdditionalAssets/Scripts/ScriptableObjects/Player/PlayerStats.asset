@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88d7cebc69a719040851718b22377576, type: 3}
   m_Name: PlayerStats
   m_EditorClassIdentifier: 
-  currentHealth: 75
-  maxHealth: 100
+  currentHealth: 110
+  maxHealth: 110
   playerName: Player
   currentEXP: 0
   currentLevel: 1
@@ -24,29 +24,41 @@ MonoBehaviour:
     requiredEXP: 500
   - level: 3
     requiredEXP: 1000
+  - level: 4
+    requiredEXP: 1500
+  - level: 5
+    requiredEXP: 2500
+  - level: 6
+    requiredEXP: 4000
+  - level: 7
+    requiredEXP: 6000
+  - level: 8
+    requiredEXP: 8000
   totalCoins: 0
   characterStatus: 'Player Status: I think I''m doing OK.  I need to be careful though.'
   currentMission: 
-  currentHealthKits: 1
+  respawnPosition: {x: 6.65, y: 0, z: -6.82}
+  respawnRotation: {x: 0, y: 0, z: 0, w: 1}
+  currentHealthKits: 3
   maxHealthKits: 5
   healthPointsRestored: 75
-  currentHandgunAmmo: 45
-  handgunClip: 13
+  currentHandgunAmmo: 3
+  handgunClip: 1
   maxHandgunClip: 13
   maxHandgunAmmo: 100
-  currentMagnumAmmo: 2
-  MagnumClip: 6
+  currentMagnumAmmo: 21
+  MagnumClip: 5
   maxMagnumClip: 6
   maxMagnumAmmo: 30
   currentLaserAmmo: 0
   LaserClip: 0
   maxLaserClip: 6
   maxLaserAmmo: 100
-  currentShotgunAmmo: 13
+  currentShotgunAmmo: 21
   shotgunClip: 0
   maxShotgunClip: 8
   maxShotgunAmmo: 50
-  currentSubMachineGunAmmo: 0
+  currentSubMachineGunAmmo: 100
   SubMachineGunClip: 0
   maxSubMachineGunClip: 30
   maxSubMachineGunAmmo: 100
@@ -54,7 +66,7 @@ MonoBehaviour:
   MachineGunClip: 0
   maxMachineGunClip: 30
   maxMachineGunAmmo: 100
-  currentRifleAmmo: 11
+  currentRifleAmmo: 23
   rifleClip: 0
   maxRifleClip: 0
   maxRifleAmmo: 50
@@ -78,3 +90,7 @@ MonoBehaviour:
   TNTClip: 0
   maxTNTClip: 1
   maxTNTAmmo: 6
+  currentEmptyHandAmmo: 0
+  EmptyHandClip: 0
+  maxEmptyHandClip: 6
+  maxEmptyHandAmmo: 100

@@ -34,6 +34,7 @@ public class Zombie : MonoBehaviour
     [SerializeField] private LookAtConstraint _lookAtConstraint;
     [SerializeField] private SphereCollider _sphereCollider;
     [SerializeField] private GameObject _bloodDecal;
+    [SerializeField] private int _exp;
 
     // Start is called before the first frame update
     void Start()
@@ -238,6 +239,7 @@ public class Zombie : MonoBehaviour
         _navMeshAgent.isStopped = true;
         StopAllCoroutines();
         _anim.SetTrigger("Death");
+        PlayerManager.Instance.AddEXP(_exp);
     }
 
     public void TurnOffColliders()

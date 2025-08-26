@@ -33,6 +33,10 @@ public class PlayerStatsSO : ScriptableObject
     [Header("Mission")]
     public string currentMission;
 
+    [Header("Respawn Location")]
+    public Vector3 respawnPosition;
+    public Quaternion respawnRotation;
+
     [Header("HealthKits")]
     public int currentHealthKits = 0;
     public int maxHealthKits = 5;

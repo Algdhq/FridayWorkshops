@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Cinemachine;
+using StarterAssets;
 public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager Instance { get; private set; }
@@ -18,8 +19,21 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _healthText;
     [SerializeField] private TextMeshProUGUI _ammoInClip;
     [SerializeField] private TextMeshProUGUI _totalAmmo;
-    
+    [SerializeField] private ThirdPersonController _thirdPersonController;
+    [SerializeField] private GameObject _deathCamera;
+    [SerializeField] private TextMeshProUGUI _missionText;
+    [SerializeField] private Transform _playerArmature;
+
+
+    [Header("Screen Overlays")]
+    [SerializeField] private Animator _playerAnim;
+    [SerializeField] private Animator _bloodAnim;
+    [SerializeField] private Animator _GVDamageAnim;
+
+    private int baseMaxHP = 100;
+    private int hpPerLevel = 10;
     private CinemachineImpulseSource _impulse;
+    private bool _inCooldown;
     public static class ShakeStrength
     {
         public static readonly float Weak = 0.1f;
@@ -42,7 +56,10 @@ public class PlayerManager : MonoBehaviour
     private void Start()
     {
         _impulse = GameObject.Find("PlayerArmature").GetComponent<CinemachineImpulseSource>();
-        _healthText.text = "Health: " + _playerStats.currentHealth.ToString();
+        RecalculateMaxHealth();
+        _playerStats.currentHealth = Mathf.Clamp(_playerStats.currentHealth, 0, _playerStats.maxHealth);
+        _healthText.text = "Health: " + _playerStats.currentHealth.ToString() + "/" + _playerStats.maxHealth;
+        _bloodAnim.gameObject.SetActive(false);
         UpdateAmmoUI();
     }
 
@@ -51,14 +68,49 @@ public class PlayerManager : MonoBehaviour
         _impulse.GenerateImpulse(Vector3.one * strength);
     }
 
+    private void RecalculateMaxHealth()
+    {
+        _playerStats.maxHealth = baseMaxHP + (_playerStats.currentLevel - 1) * hpPerLevel;
+    }
+
     public void UpdateHealthValue(int value)//+20 health
     {
         _playerStats.currentHealth += value;
         _playerStats.currentHealth = Mathf.Clamp(_playerStats.currentHealth, 0, 100);
-        _healthText.text = "Health: " + _playerStats.currentHealth.ToString();
+        _healthText.text = "Health: " + _playerStats.currentHealth.ToString() + "/" + _playerStats.maxHealth;
         if (_playerStats.currentHealth <= 0)
         {
-            Debug.Log("I died - now play death function");
+            Death();
+        }
+    }
+
+    public void StartCooldown()
+    {
+        _inCooldown = true;
+        _bloodAnim.gameObject.SetActive(true);
+        _bloodAnim.SetTrigger("Play");
+        _GVDamageAnim.SetTrigger("Play");
+        PlayerManager.Instance.CamShake(PlayerManager.ShakeStrength.Normal);
+        AudioManager.Instance.PlayPlayerClip(1);
+        _playerAnim.SetTrigger("Damage");
+        Invoke("AlterCooldownStatus", 1.0f);
+    }
+
+    public void AlterCooldownStatus()
+    {
+        _inCooldown = false;
+        _bloodAnim.gameObject.SetActive(false);
+    }
+
+    public bool CooldownStatus()
+    {
+        if (_inCooldown == true)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
         }
     }
 
@@ -79,12 +131,130 @@ public class PlayerManager : MonoBehaviour
             UpdateHealthValue(_healthPackValue);
             _playerStats.currentHealthKits--;
             AudioManager.Instance.PlayUISFXClip(4);
+            AudioManager.Instance.PlayPlayerVoiceClip(Random.Range(4, 8));
             UIManager.Instance.UpdateStats();
         }
         else
         {
             AudioManager.Instance.PlayUISFXClip(5);
         }
+    }
+
+    public void AddEXP(int value)
+    {
+        if (value <= 0) return;
+
+        _playerStats.currentEXP += value;
+
+        while (true)
+        {
+            LevelThreshold threshold = null;
+
+            for (int i = 0; i < _playerStats._levelThreshold.Count; i++)
+            {
+                if (_playerStats._levelThreshold[i].level == _playerStats.currentLevel)
+                {
+                    threshold = _playerStats._levelThreshold[i];
+                    break;
+                }
+            }
+
+            if (threshold == null) break;
+
+            if (_playerStats.currentEXP < threshold.requiredEXP) break;
+
+            _playerStats.currentEXP -= threshold.requiredEXP;
+            _playerStats.currentLevel++;
+            RecalculateMaxHealth();
+            _playerStats.currentHealth = _playerStats.maxHealth;
+
+            switch (_playerStats.currentLevel)
+            {
+                case 1:
+                    _healthText.text = "Health: " + _playerStats.currentHealth.ToString() + "/" + _playerStats.maxHealth;
+                    break;
+                case 2:
+                    Debug.Log("Level 2 reached!");
+                    UpdateMissionText();
+                    break;
+                case 3:
+                    Debug.Log("Level 3 reached!");
+                    UpdateMissionText();
+                    break;
+                case 4:
+                    Debug.Log("Level 4 reached!");
+                    UpdateMissionText();
+                    break;
+                case 5:
+                    Debug.Log("Level 5 reached!");
+                    UpdateMissionText();
+                    break;
+                case 6:
+                    Debug.Log("Level 6 reached!");
+                    UpdateMissionText();
+                    break;
+                case 7:
+                    Debug.Log("Level 7 reached!");
+                    UpdateMissionText();
+                    break;
+                case 8:
+                    Debug.Log("Level 8 reached!");
+                    UpdateMissionText();
+                    break;
+                default:
+                    Debug.Log("Level " + _playerStats.currentLevel + " reached!");                    
+                    break;
+            }
+        }
+    }
+
+    private void UpdateMissionText()
+    {
+        if (_missionText != null)
+        {
+            _missionText.text = "Level " + _playerStats.currentLevel + " reached!";
+            _healthText.text = "Health: " + _playerStats.currentHealth.ToString() + " / " + _playerStats.maxHealth;
+            AudioManager.Instance.PlayUISFXMovement(1);
+            Invoke("ClearText", 5.0f);
+        }
+    }
+
+    private void ClearText()
+    {
+        if (_missionText != null)
+        {
+            _missionText.text = "";
+        }
+    }
+
+    public void Death()
+    {
+        _playerAnim.SetTrigger("Death");
+        _thirdPersonController.Die();
+        _deathCamera.SetActive(true);
+        AudioManager.Instance.PlayPlayerVoiceClip(Random.Range(0,3));
+        Invoke("OpenGameOver", 4.0f);
+    }
+
+    private void OpenGameOver()
+    {
+        UIManager.Instance.OpenGameOverScreen();
+    }
+
+    public void Revive()
+    {
+        UpdateHealthValue(100);
+        _thirdPersonController.enabled = false;
+        _playerArmature.gameObject.GetComponent<CharacterController>().enabled = false;
+        _playerArmature.transform.position = _playerStats.respawnPosition;
+        _playerArmature.transform.rotation = _playerStats.respawnRotation;
+        _thirdPersonController.enabled = true;
+        _playerArmature.gameObject.GetComponent<CharacterController>().enabled = true;
+        _playerAnim.SetTrigger("Revive");
+        _thirdPersonController.Revive();
+        _deathCamera.SetActive(false);
+        AudioManager.Instance.PlayUISFXClip(9);
+        UIManager.Instance.UpdateGameOverScreen(false);
     }
 
     public bool CheckAmmoAvailability(int value)
@@ -150,7 +320,6 @@ public class PlayerManager : MonoBehaviour
             return false;
         }
     }
-
 
     public void UseHandgunBullet()
     {
@@ -355,7 +524,6 @@ public class PlayerManager : MonoBehaviour
         UpdateAmmoUI();
     }
 
-
     public void UpdateHandgunAmmo(int value)
     {
         _playerStats.currentHandgunAmmo += value;
@@ -397,6 +565,7 @@ public class PlayerManager : MonoBehaviour
         _playerStats.currentRifleAmmo += value;
         _playerStats.currentRifleAmmo = Mathf.Clamp(_playerStats.currentRifleAmmo, 0, _playerStats.maxRifleAmmo);
     }
+
     public void UpdateRPGBulletAmmo(int value)
     {
         _playerStats.currentRPGAmmo += value;
@@ -508,10 +677,17 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-
     public void SetAmmoType(AmmoType type)
     {
         _ammoType = type;
+    }
+
+    public void SaveRespawnPoint(Transform playerTransform)
+    {
+        _playerStats.respawnPosition = playerTransform.position;
+        _playerStats.respawnRotation = playerTransform.rotation;
+        Debug.Log($"Respawn saved at Position: {_playerStats.respawnPosition} | Rotation: {_playerStats.respawnRotation.eulerAngles}");
+
     }
 
     public PlayerStatsSO GetStats()
