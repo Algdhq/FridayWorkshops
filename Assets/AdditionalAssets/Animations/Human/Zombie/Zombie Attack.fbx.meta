@@ -36,10 +36,10 @@ ModelImporter:
       name: ZombieAttack
       takeName: mixamo.com
       internalID: -203655887218126122
-      firstFrame: 0
+      firstFrame: 10
       lastFrame: 79
       wrapMode: 0
-      orientationOffsetY: 0
+      orientationOffsetY: -67.73
       level: 0
       cycleOffset: 0
       loop: 0

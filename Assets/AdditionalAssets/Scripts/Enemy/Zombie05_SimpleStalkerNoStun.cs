@@ -25,7 +25,10 @@ public class Zombie05_SimpleStalkerNoStun : MonoBehaviour
     private Animator _anim;
     private GameObject _player;
     private bool _startNavMeshAgent;
+    private bool _amAttacking;
+    private bool _isDead;
 
+    [SerializeField] private List<GameObject> _hitBoxes = new List<GameObject>();
     [SerializeField] private NavMeshAgent _navMeshAgent;
     [SerializeField] private LookAtConstraint _lookAtConstraint;
     [SerializeField] private SphereCollider _sphereCollider;
@@ -44,11 +47,11 @@ public class Zombie05_SimpleStalkerNoStun : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_startNavMeshAgent == true)
+        if (_startNavMeshAgent == true && !_amAttacking && _status != Status.Attack)
         {
             _navMeshAgent.SetDestination(_player.transform.position);
             _anim.SetFloat("Speed", _navMeshAgent.velocity.magnitude);
-            if (_navMeshAgent.remainingDistance < 2.0f && !_navMeshAgent.pathPending)
+            if (_navMeshAgent.remainingDistance < 1.5f && !_navMeshAgent.pathPending)
             {
                 SetStatus(Status.Attack);
             }
@@ -102,29 +105,56 @@ public class Zombie05_SimpleStalkerNoStun : MonoBehaviour
     {
         _anim.SetTrigger("Alert");
         _lookAtConstraint.constraintActive = true;
+        AudioManager.Instance.PlayZombieJumpscareClip(Random.Range(7, 10));
         Invoke("ResumeChase", 3.0f);
     }
 
     public void Stalking()
     {
         _startNavMeshAgent = true;
+        _navMeshAgent.speed = _stalkingSpeed;
         _sphereCollider.enabled = false;
     }
 
     public void Attack()
     {
-
+        if(_amAttacking == false && !_isDead)
+        {
+            _navMeshAgent.speed = 0;
+            _anim.SetTrigger("Attack");
+            AudioManager.Instance.PlayZombieJumpscareClip(Random.Range(7, 10));
+            _amAttacking = true;
+            Invoke("ResumeChase", 2.0f);
+        }        
     }
 
     public void ResumeChase()
     {
         _navMeshAgent.speed = _stalkingSpeed;
         SetStatus(Status.Stalking);
+        _amAttacking = false;
     }
 
     public void Death()
     {
+        _sphereCollider.enabled = false;
+        _isDead = true;
+        _startNavMeshAgent = false;
+        TurnOffColliders();
+        _lookAtConstraint.constraintActive = false;
+        AudioManager.Instance.PlayZombieDeathClip(Random.Range(0, 4));
+        _navMeshAgent.speed = 0;
+        _navMeshAgent.isStopped = true;
+        _anim.SetTrigger("Death");
         Debug.Log("The enemy is dead");
+    }
+
+    public void TurnOffColliders()
+    {
+        foreach (var h in _hitBoxes)
+        {
+            h.SetActive(false);
+        }
     }
 
     public void RandomStart()
